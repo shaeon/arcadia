@@ -1,0 +1,6 @@
+CORE_ID=arcadia
+PROJECT_NAME=arcadia
+VERSION=1.0
+BITSTREAM_FILE=output_files/arcadia.rbf
+EXTRA_BINARIES=readme.md
+EXTRA_SUBMODULES=common/mist-modules

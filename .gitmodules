@@ -1,0 +1,3 @@
+[submodule "common/mist-modules"]
+	path = common/mist-modules
+	url = https://github.com/teiram/mist-modules.git

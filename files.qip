@@ -1,0 +1,18 @@
+# Ficheros comunes a todas las placas.
+#
+# Las rutas van con qip_path para que valgan desde el proyecto de cada placa
+# (mist/, sidi/, calypso/, poseidon/). El PLL y el .sdc NO estan aqui, porque
+# cambian con la placa: los pone cada .qsf.
+set_global_assignment -name QIP_FILE [file join $::quartus(qip_path) common/mist-modules/mist.qip]
+
+# Top comun y sincronismos de 15 kHz
+set_global_assignment -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) rtl/arcadia_top.sv]
+set_global_assignment -name VERILOG_FILE [file join $::quartus(qip_path) rtl/arcadia_sync15.v]
+
+# Core Arcadia (CPU Signetics 2650 + UVI SC2637)
+set_global_assignment -name VHDL_FILE [file join $::quartus(qip_path) rtl/base/base_pack.vhd]
+set_global_assignment -name VHDL_FILE [file join $::quartus(qip_path) rtl/s2650/sgs2650_pack.vhd]
+set_global_assignment -name VHDL_FILE [file join $::quartus(qip_path) rtl/s2650/sgs2650.vhd]
+set_global_assignment -name VHDL_FILE [file join $::quartus(qip_path) rtl/s2650/sgs2637_sound.vhd]
+set_global_assignment -name VHDL_FILE [file join $::quartus(qip_path) rtl/s2650/sgs2637.vhd]
+set_global_assignment -name VHDL_FILE [file join $::quartus(qip_path) rtl/s2650/arcadia_core.vhd]
