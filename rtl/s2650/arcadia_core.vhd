@@ -294,32 +294,36 @@ BEGIN
     IF rising_edge(clk) THEN
       -------------------------------------------------------------------------------
       IF dpad0='0' THEN
+        -- Analogico MiST: [15:8]=X, [7:0]=Y (MiSTer usa el orden contrario).
+        -- pot_b es el eje horizontal y pot_a el vertical (potl_h=potl_b sin swapxy).
         IF reverse_lr='1' THEN
-          pot0_a<=paddle_value_reverse(joystick_analog_0(15 DOWNTO 8));
+          pot0_b<=paddle_value_reverse(joystick_analog_0(15 DOWNTO 8));
         ELSE
-          pot0_a<=paddle_value(joystick_analog_0(15 DOWNTO 8));
+          pot0_b<=paddle_value(joystick_analog_0(15 DOWNTO 8));
         END IF;
         IF reverse_ud='1' THEN
-          pot0_b<=paddle_value_reverse(joystick_analog_0( 7 DOWNTO 0));
+          pot0_a<=paddle_value_reverse(joystick_analog_0( 7 DOWNTO 0));
         ELSE
-          pot0_b<=paddle_value(joystick_analog_0( 7 DOWNTO 0));
+          pot0_a<=paddle_value(joystick_analog_0( 7 DOWNTO 0));
         END IF;
       ELSE
+        -- Cruceta MiST: [0]=derecha [1]=izquierda [2]=abajo [3]=arriba.
+        -- Derecha y abajo dan valores altos, como el analogico, MAME y Senhor.
         pot0_a<=x"70";
         pot0_b<=x"70";
-        IF reverse_ud='0' THEN
-          IF joystick_0(0)='1' THEN pot0_b<=x"00"; END IF; -- up
-          IF joystick_0(1)='1' THEN pot0_b<=x"FE"; END IF; -- down
-        ELSE
-          IF joystick_0(0)='1' THEN pot0_b<=x"FE"; END IF; -- up -> down
-          IF joystick_0(1)='1' THEN pot0_b<=x"00"; END IF; -- down -> up
-        END IF;
         IF reverse_lr='0' THEN
-          IF joystick_0(2)='1' THEN pot0_a<=x"00"; END IF; -- left
-          IF joystick_0(3)='1' THEN pot0_a<=x"FE"; END IF; -- right
+          IF joystick_0(0)='1' THEN pot0_b<=x"FE"; END IF; -- derecha
+          IF joystick_0(1)='1' THEN pot0_b<=x"00"; END IF; -- izquierda
         ELSE
-          IF joystick_0(2)='1' THEN pot0_a<=x"FE"; END IF; -- left -> right
-          IF joystick_0(3)='1' THEN pot0_a<=x"00"; END IF; -- right -> left
+          IF joystick_0(0)='1' THEN pot0_b<=x"00"; END IF; -- derecha -> izquierda
+          IF joystick_0(1)='1' THEN pot0_b<=x"FE"; END IF; -- izquierda -> derecha
+        END IF;
+        IF reverse_ud='0' THEN
+          IF joystick_0(2)='1' THEN pot0_a<=x"FE"; END IF; -- abajo
+          IF joystick_0(3)='1' THEN pot0_a<=x"00"; END IF; -- arriba
+        ELSE
+          IF joystick_0(2)='1' THEN pot0_a<=x"00"; END IF; -- abajo -> arriba
+          IF joystick_0(3)='1' THEN pot0_a<=x"FE"; END IF; -- arriba -> abajo
         END IF;
       END IF;
       
@@ -337,32 +341,36 @@ BEGIN
       
       -------------------------------------------------------------------------------
       IF dpad1='0' THEN
+        -- Analogico MiST: [15:8]=X, [7:0]=Y (MiSTer usa el orden contrario).
+        -- pot_b es el eje horizontal y pot_a el vertical (potl_h=potl_b sin swapxy).
         IF reverse_lr='1' THEN
-          pot1_a<=paddle_value_reverse(joystick_analog_1(15 DOWNTO 8));
+          pot1_b<=paddle_value_reverse(joystick_analog_1(15 DOWNTO 8));
         ELSE
-          pot1_a<=paddle_value(joystick_analog_1(15 DOWNTO 8));
+          pot1_b<=paddle_value(joystick_analog_1(15 DOWNTO 8));
         END IF;
         IF reverse_ud='1' THEN
-          pot1_b<=paddle_value_reverse(joystick_analog_1( 7 DOWNTO 0));
+          pot1_a<=paddle_value_reverse(joystick_analog_1( 7 DOWNTO 0));
         ELSE
-          pot1_b<=paddle_value(joystick_analog_1( 7 DOWNTO 0));
+          pot1_a<=paddle_value(joystick_analog_1( 7 DOWNTO 0));
         END IF;
       ELSE
+        -- Cruceta MiST: [0]=derecha [1]=izquierda [2]=abajo [3]=arriba.
+        -- Derecha y abajo dan valores altos, como el analogico, MAME y Senhor.
         pot1_a<=x"70";
         pot1_b<=x"70";
-        IF reverse_ud='0' THEN
-          IF joystick_1(0)='1' THEN pot1_b<=x"00"; END IF; -- up
-          IF joystick_1(1)='1' THEN pot1_b<=x"FE"; END IF; -- down
-        ELSE
-          IF joystick_1(0)='1' THEN pot1_b<=x"FE"; END IF; -- up -> down
-          IF joystick_1(1)='1' THEN pot1_b<=x"00"; END IF; -- down -> up
-        END IF;
         IF reverse_lr='0' THEN
-          IF joystick_1(2)='1' THEN pot1_a<=x"00"; END IF; -- left
-          IF joystick_1(3)='1' THEN pot1_a<=x"FE"; END IF; -- right
+          IF joystick_1(0)='1' THEN pot1_b<=x"FE"; END IF; -- derecha
+          IF joystick_1(1)='1' THEN pot1_b<=x"00"; END IF; -- izquierda
         ELSE
-          IF joystick_1(2)='1' THEN pot1_a<=x"FE"; END IF; -- left -> right
-          IF joystick_1(3)='1' THEN pot1_a<=x"00"; END IF; -- right -> left
+          IF joystick_1(0)='1' THEN pot1_b<=x"00"; END IF; -- derecha -> izquierda
+          IF joystick_1(1)='1' THEN pot1_b<=x"FE"; END IF; -- izquierda -> derecha
+        END IF;
+        IF reverse_ud='0' THEN
+          IF joystick_1(2)='1' THEN pot1_a<=x"FE"; END IF; -- abajo
+          IF joystick_1(3)='1' THEN pot1_a<=x"00"; END IF; -- arriba
+        ELSE
+          IF joystick_1(2)='1' THEN pot1_a<=x"00"; END IF; -- abajo -> arriba
+          IF joystick_1(3)='1' THEN pot1_a<=x"FE"; END IF; -- arriba -> abajo
         END IF;
       END IF;
       
@@ -379,10 +387,13 @@ BEGIN
       END IF;
 
       -------------------------------------------------------------------------------
-      potl_a<=mux(swap_ctrl_eff, pot0_a, pot1_a);
-      potl_b<=mux(swap_ctrl_eff, pot0_b, pot1_b);
-      potr_a<=mux(swap_ctrl_eff, pot1_a, pot0_a);
-      potr_b<=mux(swap_ctrl_eff, pot1_b, pot0_b);
+      -- Mando izquierdo ($19FE, igual que el teclado de $1900) = jugador 1,
+      -- salvo con swap. Antes estaba al reves que los teclados: sin swap el
+      -- joystick del jugador 1 movia el mando derecho.
+      potl_a<=mux(swap_ctrl_eff, pot1_a, pot0_a);
+      potl_b<=mux(swap_ctrl_eff, pot1_b, pot0_b);
+      potr_a<=mux(swap_ctrl_eff, pot0_a, pot1_a);
+      potr_b<=mux(swap_ctrl_eff, pot0_b, pot1_b);
       -------------------------------------------------------------------------------
       IF reset_na='0' THEN
         dpad0<='0';
@@ -429,28 +440,35 @@ BEGIN
     OR crc32_final = x"306E39C1"  -- Turtles/Turpin
     ELSE '0';
 
-  ctrl_swap <= '1' WHEN
-       crc32_final = x"4DA68DF8"  -- 3D Soccer (Emerson)
-    OR crc32_final = x"1B5BE22A"  -- 3D Soccer (Tele-Fever)
-    OR crc32_final = x"76E773FA"  -- Crazy Climber
-    OR crc32_final = x"E84DF2EF"  -- Crazy Gobbler
-    OR crc32_final = x"77C19320"  -- Funky Fish
-    OR crc32_final = x"1CEC4B21"  -- Hobo
-    OR crc32_final = x"97060A54"  -- Jump Bug (Emerson)
-    OR crc32_final = x"DC0264B8"  -- Jump Bug (Tele-Fever)
-    OR crc32_final = x"A0626E23"  -- R2D Tank
-    OR crc32_final = x"A06F284B"  -- Red Clash
-    OR crc32_final = x"E3794A2C"  -- Space Attack (Emerson)
-    OR crc32_final = x"669632EC"  -- Space Attack (Schmid)
-    OR crc32_final = x"C91828CB"  -- Space War (prototype)
-    OR crc32_final = x"BB88DAEA"  -- Spiders
-    OR crc32_final = x"E66F362D"  -- The End
-    OR crc32_final = x"306E39C1"  -- Turtles/Turpin
-    OR crc32_final = x"566C78A0"  -- The End (enhanced)
-    OR crc32_final = x"617EEB43"  -- Hobo (enhanced)
-    OR crc32_final = x"06A86F4A"  -- Red Clash (overdump)
-    OR crc32_final = x"F9D9EC5B"  -- Spiders (overdump)
-    ELSE '0';
+  -- Tabla anterior de "swap" automatico de mandos, desactivada. Se hizo para
+  -- compensar que el joystick del jugador 1 iba al mando derecho ($19FF)
+  -- mientras su teclado iba al izquierdo ($1900). Con los ejes ya en el mando
+  -- izquierdo ($19FE), como en MAME y en el core de Senhor, estos juegos
+  -- funcionan sin swap. Si algun juego necesita el mando derecho, usar la
+  -- opcion "Swap Controllers" del OSD.
+  -- ctrl_swap <= '1' WHEN
+  -- crc32_final = x"4DA68DF8"  -- 3D Soccer (Emerson)
+  -- OR crc32_final = x"1B5BE22A"  -- 3D Soccer (Tele-Fever)
+  -- OR crc32_final = x"76E773FA"  -- Crazy Climber
+  -- OR crc32_final = x"E84DF2EF"  -- Crazy Gobbler
+  -- OR crc32_final = x"77C19320"  -- Funky Fish
+  -- OR crc32_final = x"1CEC4B21"  -- Hobo
+  -- OR crc32_final = x"97060A54"  -- Jump Bug (Emerson)
+  -- OR crc32_final = x"DC0264B8"  -- Jump Bug (Tele-Fever)
+  -- OR crc32_final = x"A0626E23"  -- R2D Tank
+  -- OR crc32_final = x"A06F284B"  -- Red Clash
+  -- OR crc32_final = x"E3794A2C"  -- Space Attack (Emerson)
+  -- OR crc32_final = x"669632EC"  -- Space Attack (Schmid)
+  -- OR crc32_final = x"C91828CB"  -- Space War (prototype)
+  -- OR crc32_final = x"BB88DAEA"  -- Spiders
+  -- OR crc32_final = x"E66F362D"  -- The End
+  -- OR crc32_final = x"306E39C1"  -- Turtles/Turpin
+  -- OR crc32_final = x"566C78A0"  -- The End (enhanced)
+  -- OR crc32_final = x"617EEB43"  -- Hobo (enhanced)
+  -- OR crc32_final = x"06A86F4A"  -- Red Clash (overdump)
+  -- OR crc32_final = x"F9D9EC5B"  -- Spiders (overdump)
+  -- ELSE '0';
+  ctrl_swap <= '0';
 
   -- Manual O4 toggle now acts as an override on top of auto-detection,
   -- for homebrews/unknown dumps not in the table above.

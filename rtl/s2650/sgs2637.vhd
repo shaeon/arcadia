@@ -872,19 +872,16 @@ BEGIN
           --  END IF;
           --END IF;
           
-          -- $C0/$40 are block-mode control characters only when they
-          -- occupy the first character cell of a display line.  Treating
-          -- them as controls in any column corrupts rows containing ordinary
-          -- coloured character codes with those byte values.
-          IF ch=x"C0" AND m AND
-             hpos>=row_origin AND
-             hpos< row_origin+8 THEN
+          -- $C0 / $40 switch block-graphics mode on / off from that cell to
+          -- the end of the line, in ANY column (as in MAME and in the original
+          -- MiSTer/Senhor core). The line starts in the mode set by $19F8 bit 7.
+          -- Mobile Soldier Gundam switches modes mid-line for its katakana title;
+          -- restricting the codes to the first column broke it.
+          IF ch=x"C0" AND m THEN
             gmode<='1';
             h:=false;
             
-          ELSIF ch=x"40" AND m AND
-                hpos>=row_origin AND
-                hpos< row_origin+8 THEN
+          ELSIF ch=x"40" AND m THEN
             gmode<='0';
             h:=false;
             

@@ -6,7 +6,7 @@ An FPGA implementation of the **Emerson Arcadia 2001** (1982) game console, with
 
 The core itself is **Grabulosaure's** MiSTer Arcadia core. The **port to Poseidon was done by Turri ([@turri21](https://github.com/turri21))**, based on his port to Senhor: [turri21/Arcadia_Senhor](https://github.com/turri21/Arcadia_Senhor), which is the reference for this repository.
 
-Our contribution is small: we fixed the OSD and the 15 kHz video output of the Poseidon port, and arranged the project so the same sources build for the other MiST-family boards.
+Our contribution is small: we fixed the OSD and the 15 kHz video output of the Poseidon port, then the block graphics and the controller mapping, and arranged the project so the same sources build for the other MiST-family boards.
 
 ## Board status
 
@@ -33,6 +33,8 @@ The core needs no SDRAM: the cartridge (up to 16 KiB) and the video RAM live in 
 | Vertical front / back porch | 0 / 0 lines | 3 / 14 lines |
 
 **Clock and timing.** The old "Video output NTSC/PAL" option switched the system clock between two PLL outputs through a logic multiplexer, which can glitch the clock; and since the 2637 core has PAL mode tied off, "PAL" only ran the console 24 % faster. It has been removed. The `.sdc` files now constrain `SPI_SCK` and declare it asynchronous to the system clock.
+
+**Block graphics and controllers (v1.1).** The block-graphics control codes `$C0`/`$40` had been restricted to the first column of each line; they work again in any column, as in MAME and in the original core (this fixes the katakana title of Mobile Soldier Gundam). On the controller side, the player 1 joystick was wired to the right-hand controller's analog port ($19FF) while its keypad went to the left one ($1900); both now go to the left controller, as in MAME and Senhor, and the automatic per-game controller-swap table that compensated for it has been disabled. The D-pad directions now match the analog stick, the MiST analog X/Y bytes are read in the right order, "Reverse Left/Right" and "Reverse Up/Down" act on the axes they name, and the right stick's up-left diagonal now gives keypad 7 instead of 8.
 
 All of this was checked in simulation (Icarus Verilog) with the exact 2637 timing and the real `mist_video`, and on a Poseidon.
 

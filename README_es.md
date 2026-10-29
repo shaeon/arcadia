@@ -6,7 +6,7 @@ Implementación en FPGA de la consola **Emerson Arcadia 2001** (1982), con su CP
 
 El core es el de **Grabulosaure** para MiSTer. El **port a Poseidon lo hizo Turri ([@turri21](https://github.com/turri21))**, a partir de su port a Senhor: [turri21/Arcadia_Senhor](https://github.com/turri21/Arcadia_Senhor), que es la referencia de este repositorio.
 
-Nuestra aportación es pequeña: arreglamos el OSD y la salida de vídeo a 15 kHz del port de Poseidon, y organizamos el proyecto para que los mismos fuentes compilen en las demás placas de la familia MiST.
+Nuestra aportación es pequeña: arreglamos el OSD y la salida de vídeo a 15 kHz del port de Poseidon, después los gráficos de bloques y el mapeo de mandos, y organizamos el proyecto para que los mismos fuentes compilen en las demás placas de la familia MiST.
 
 ## Estado por placa
 
@@ -33,6 +33,8 @@ El core no necesita SDRAM: el cartucho (hasta 16 KiB) y la RAM de vídeo van en 
 | Porche vertical anterior / posterior | 0 / 0 líneas | 3 / 14 líneas |
 
 **Reloj y temporización.** La antigua opción "Video output NTSC/PAL" conmutaba el reloj del sistema entre dos salidas del PLL con un multiplexor lógico, lo que puede producir glitches de reloj; y como el core del 2637 tiene el modo PAL desactivado, "PAL" solo hacía ir la consola un 24 % más rápida. Se ha quitado. Los `.sdc` restringen ahora `SPI_SCK` y lo declaran asíncrono respecto al reloj del sistema.
+
+**Gráficos de bloques y mandos (v1.1).** Los códigos de control de gráficos de bloques `$C0`/`$40` se habían limitado a la primera columna de cada línea; vuelven a funcionar en cualquier columna, como en MAME y en el core original (esto arregla el título en katakana de Mobile Soldier Gundam). En los mandos, el joystick del jugador 1 iba al puerto analógico del mando derecho ($19FF) mientras su teclado iba al izquierdo ($1900); ahora los dos van al mando izquierdo, como en MAME y en Senhor, y se ha desactivado la tabla de intercambio automático de mandos por juego que compensaba ese fallo. Las direcciones de la cruceta coinciden ya con las del stick analógico, los bytes X/Y del analógico de MiST se leen en el orden correcto, "Reverse Left/Right" y "Reverse Up/Down" actúan sobre el eje que indican, y la diagonal arriba-izquierda del stick derecho da la tecla 7 en vez de la 8.
 
 Todo esto se ha comprobado en simulación (Icarus Verilog), con la temporización exacta del 2637 y el `mist_video` real, y en una Poseidon.
 
