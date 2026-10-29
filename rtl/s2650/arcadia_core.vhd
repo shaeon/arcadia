@@ -387,13 +387,14 @@ BEGIN
       END IF;
 
       -------------------------------------------------------------------------------
-      -- Mando izquierdo ($19FE, igual que el teclado de $1900) = jugador 1,
-      -- salvo con swap. Antes estaba al reves que los teclados: sin swap el
-      -- joystick del jugador 1 movia el mando derecho.
-      potl_a<=mux(swap_ctrl_eff, pot1_a, pot0_a);
-      potl_b<=mux(swap_ctrl_eff, pot1_b, pot0_b);
-      potr_a<=mux(swap_ctrl_eff, pot0_a, pot1_a);
-      potr_b<=mux(swap_ctrl_eff, pot0_b, pot1_b);
+      -- El joystick del jugador 1 se lee en $19FF (potr) y el del jugador 2
+      -- en $19FE (potl), como en la rama activa de MAME (arcadia_v.cpp),
+      -- mientras que el teclado del jugador 1 esta en $1900. Con swap, todo el
+      -- jugador 1 (joystick y teclado) pasa al otro mando.
+      potl_a<=mux(swap_ctrl_eff, pot0_a, pot1_a);
+      potl_b<=mux(swap_ctrl_eff, pot0_b, pot1_b);
+      potr_a<=mux(swap_ctrl_eff, pot1_a, pot0_a);
+      potr_b<=mux(swap_ctrl_eff, pot1_b, pot0_b);
       -------------------------------------------------------------------------------
       IF reset_na='0' THEN
         dpad0<='0';
@@ -440,35 +441,30 @@ BEGIN
     OR crc32_final = x"306E39C1"  -- Turtles/Turpin
     ELSE '0';
 
-  -- Tabla anterior de "swap" automatico de mandos, desactivada. Se hizo para
-  -- compensar que el joystick del jugador 1 iba al mando derecho ($19FF)
-  -- mientras su teclado iba al izquierdo ($1900). Con los ejes ya en el mando
-  -- izquierdo ($19FE), como en MAME y en el core de Senhor, estos juegos
-  -- funcionan sin swap. Si algun juego necesita el mando derecho, usar la
-  -- opcion "Swap Controllers" del OSD.
-  -- ctrl_swap <= '1' WHEN
-  -- crc32_final = x"4DA68DF8"  -- 3D Soccer (Emerson)
-  -- OR crc32_final = x"1B5BE22A"  -- 3D Soccer (Tele-Fever)
-  -- OR crc32_final = x"76E773FA"  -- Crazy Climber
-  -- OR crc32_final = x"E84DF2EF"  -- Crazy Gobbler
-  -- OR crc32_final = x"77C19320"  -- Funky Fish
-  -- OR crc32_final = x"1CEC4B21"  -- Hobo
-  -- OR crc32_final = x"97060A54"  -- Jump Bug (Emerson)
-  -- OR crc32_final = x"DC0264B8"  -- Jump Bug (Tele-Fever)
-  -- OR crc32_final = x"A0626E23"  -- R2D Tank
-  -- OR crc32_final = x"A06F284B"  -- Red Clash
-  -- OR crc32_final = x"E3794A2C"  -- Space Attack (Emerson)
-  -- OR crc32_final = x"669632EC"  -- Space Attack (Schmid)
-  -- OR crc32_final = x"C91828CB"  -- Space War (prototype)
-  -- OR crc32_final = x"BB88DAEA"  -- Spiders
-  -- OR crc32_final = x"E66F362D"  -- The End
-  -- OR crc32_final = x"306E39C1"  -- Turtles/Turpin
-  -- OR crc32_final = x"566C78A0"  -- The End (enhanced)
-  -- OR crc32_final = x"617EEB43"  -- Hobo (enhanced)
-  -- OR crc32_final = x"06A86F4A"  -- Red Clash (overdump)
-  -- OR crc32_final = x"F9D9EC5B"  -- Spiders (overdump)
-  -- ELSE '0';
-  ctrl_swap <= '0';
+  -- Juegos que usan el otro mando para el jugador 1 (tabla del port de
+  -- Poseidon, comprobada en hardware).
+  ctrl_swap <= '1' WHEN
+       crc32_final = x"4DA68DF8"  -- 3D Soccer (Emerson)
+    OR crc32_final = x"1B5BE22A"  -- 3D Soccer (Tele-Fever)
+    OR crc32_final = x"76E773FA"  -- Crazy Climber
+    OR crc32_final = x"E84DF2EF"  -- Crazy Gobbler
+    OR crc32_final = x"77C19320"  -- Funky Fish
+    OR crc32_final = x"1CEC4B21"  -- Hobo
+    OR crc32_final = x"97060A54"  -- Jump Bug (Emerson)
+    OR crc32_final = x"DC0264B8"  -- Jump Bug (Tele-Fever)
+    OR crc32_final = x"A0626E23"  -- R2D Tank
+    OR crc32_final = x"A06F284B"  -- Red Clash
+    OR crc32_final = x"E3794A2C"  -- Space Attack (Emerson)
+    OR crc32_final = x"669632EC"  -- Space Attack (Schmid)
+    OR crc32_final = x"C91828CB"  -- Space War (prototype)
+    OR crc32_final = x"BB88DAEA"  -- Spiders
+    OR crc32_final = x"E66F362D"  -- The End
+    OR crc32_final = x"306E39C1"  -- Turtles/Turpin
+    OR crc32_final = x"566C78A0"  -- The End (enhanced)
+    OR crc32_final = x"617EEB43"  -- Hobo (enhanced)
+    OR crc32_final = x"06A86F4A"  -- Red Clash (overdump)
+    OR crc32_final = x"F9D9EC5B"  -- Spiders (overdump)
+    ELSE '0';
 
   -- Manual O4 toggle now acts as an override on top of auto-detection,
   -- for homebrews/unknown dumps not in the table above.

@@ -571,26 +571,25 @@ wire       video_hb_shifted = hb_shift[VIDEO_SHIFT_CYCLES-1];
 // misma proporcion en ambos modos. Con ce_divider=7 solo habria 184 puntos a
 // 15 kHz y el OSD (256) no cabria; con el detector automatico y
 // ce_divider=1 el OSD salia comprimido a ~1/3 del ancho en VGA.
-// Sincronismos estandar para 15 kHz; a 31 kHz se mantienen los originales,
-// que el scandoubler ya convierte correctamente.
-wire hs_15k, vs_15k;
-arcadia_sync15 sync15
+// Sincronismos estandar (activos a nivel bajo), con tiempos de 15 kHz o de
+// VGA segun este activo el scandoubler. Ver arcadia_sync.v.
+wire video_hs, video_vs;
+arcadia_sync video_sync
 (
     .clk(clk_sys),
+    .vga(~scandoubler_disable),
     .hs_in(core_hs),
     .vs_in(core_vs),
-    .hs_out(hs_15k),
-    .vs_out(vs_15k)
+    .hs_n(video_hs),
+    .vs_n(video_vs)
 );
-
-wire video_hs = scandoubler_disable ? hs_15k : core_hs;
-wire video_vs = scandoubler_disable ? vs_15k : core_vs;
 
 mist_video #(.COLOR_DEPTH(8),
    .SD_HCNT_WIDTH(11),
 	.OUT_COLOR_DEPTH(VGA_BITS),
 	.USE_BLANKS(1'b1),
 	.OSD_AUTO_CE(1'b0),
+	.OSD_COLOR(3'b001),          // ventana azul; con el valor por defecto (4) el texto sale rosado
 	.BIG_OSD(BIG_OSD))
 mist_video (
     .clk_sys(clk_sys),

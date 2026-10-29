@@ -7,7 +7,7 @@ set_global_assignment -name QIP_FILE [file join $::quartus(qip_path) common/mist
 
 # Top comun y sincronismos de 15 kHz
 set_global_assignment -name SYSTEMVERILOG_FILE [file join $::quartus(qip_path) rtl/arcadia_top.sv]
-set_global_assignment -name VERILOG_FILE [file join $::quartus(qip_path) rtl/arcadia_sync15.v]
+set_global_assignment -name VERILOG_FILE [file join $::quartus(qip_path) rtl/arcadia_sync.v]
 
 # Core Arcadia (CPU Signetics 2650 + UVI SC2637)
 set_global_assignment -name VHDL_FILE [file join $::quartus(qip_path) rtl/base/base_pack.vhd]
